@@ -5,6 +5,9 @@ Said image can either be a website when served as text\html or a image when serv
 The cool part is, that one can recursively load the image in the website itself!
 Credit for the original idea goes to: http://lcamtuf.coredump.cx/squirrel/#
 
+# Demo
+
+http://thoughts-and-tricks.oz-web.com/inception.html
 
 # Upload
 
@@ -14,3 +17,4 @@ Credit for the original idea goes to: http://lcamtuf.coredump.cx/squirrel/#
 
 # Result
 ![result](https://i.imgur.com/0AKwkux.png)
+
