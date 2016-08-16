@@ -1,127 +1,98 @@
-<style>
-  #progress_bar {
-    margin: 10px 0;
-    padding: 3px;
-    border: 1px solid #000;
-    font-size: 14px;
-    clear: both;
-    opacity: 0;
-    -moz-transition: opacity 1s linear;
-    -o-transition: opacity 1s linear;
-    -webkit-transition: opacity 1s linear;
-  }
-  #progress_bar.loading {
-    opacity: 1.0;
-  }
-  #progress_bar .percent {
-    background-color: #99ccff;
-    height: auto;
-    width: 0;
-  }
-</style>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8 />
+		<title>htmljpeginception</title>
+	</head>
+	<body onload='document.getElementById("img-file").value = "";' style="font-family: Verdana;">
+		<b>HTML JPEG Inception</b><br>
+		This is a generator using the trick from the guys over at <a href="http://lcamtuf.coredump.cx/squirrel/#">coredump.cx</a><br>Be sure to pay them a visit.<br><br>
+		Visit me on <a href="https://github.com/ozzi-/">GitHub</a>.<br>
+		Everything happens in JS using the HTML5 Filereader and some (purely client-sided magic).
+		<br><br>
+		<hr>
+		<br>
+		<b>Text (html works too) that will be 'injected':</b><br>
+		<textarea id="textarea-inject" rows="3" cols="50"></textarea> 
+		<br><br>
+		<form>
+			<b>Choose Content Type:</b>
+			<fieldset>
+				<input type="radio" id="thtml" name="type" value="text/html" checked>
+				<label for="thtml"> text/html</label><br> 
+				<input type="radio" id="tjpeg" name="type" value="image/jpeg">
+				<label for="tjpeg"> image/jpeg</label><br> 
+				<input type="radio" id="ttext" name="type" value="text/plain">
+				<label for="tjpeg"> text/plain</label><br> 
+			</fieldset>
+		</form>
+		<br><br>
+		<b>Choose a JPG:</b>
+		(be aware, not all work, still figuring out why some <br>of them get corrupted while some of them don't).<br><br>
+		<input type="file" id="img-file" name="img" accept="image/jpeg" value=""/>
+		<br><br>
+		<span id="info-open" style="visibility: hidden;" >
+		<a href="#" id="link" target="_blank">Click here to open the generated blob (if popup was blocked)</a><br><i>Hint: You can directly save via right-click 'save as'</i><br>
+		</span>
+		<br>
+		<button id="btn-go" style="visibility: hidden;">Go!</button>
+		<script>
+		  var reader;
+		  function abortRead() {
+			reader.abort();
+		  }
+		  function errorHandler(evt) {
+			switch(evt.target.error.code) {
+			  case evt.target.error.NOT_FOUND_ERR:
+				alert('File not found');
+				break;
+			  case evt.target.error.NOT_READABLE_ERR:
+				alert('File is not readable');
+				break;
+			  case evt.target.error.ABORT_ERR:
+				break;
+			  default:
+				alert('An error occurred reading this file :(');
+			};
+		  }
+		  function generate(evt) {
+			reader = new FileReader();
+			reader.onerror = errorHandler;
+			reader.onloadstart = function(e) {
+			};
+			reader.onload = function(e) {
+			  var result = reader.result;
+			  var inject = '<html><body onload="document.getElementById(\'img-inception\').src = window.location.href;"><style>body { visibility: hidden; } .n { visibility: visible; position: absolute; padding: 0 1ex 0 1ex; margin: 0; top: 0; left: 0; } h1 { margin-top: 0.4ex; margin-bottom: 0.8ex; }</style><div class=n>'+document.getElementById("textarea-inject").value+'<br><img id="img-inception" src="" style="border: 1px solid crimson; heigth:50%;"><br><br>Idea by: lcamtuf@coredump.cx<br>Generator by: http://github.com/ozzi-/<!--';
+			  
+			  var i, l, d, array;
+			  d = reader.result;
+			  l = d.length;
+			  array = new Uint8Array(l+inject.length);
+			  for (var i = 0; i < 24; i++){
+				array[i] = d.charCodeAt(i);
+			  }
+			  for (var i = 0; i < inject.length; i++){
+				array[i+24] = inject.charCodeAt(i);
+			  }
+			  for (var i = 24; i < l; i++){
+				array[i+inject.length] = d.charCodeAt(i);
+			  }
+			document.getElementById("info-open").style.visibility = 'visible';
+			  var oMyBlob = new Blob([array], {type : document.querySelector('input[name = "type"]:checked').value}); 
+			  window.open(URL.createObjectURL(oMyBlob));
+			  document.getElementById("link").href=URL.createObjectURL(oMyBlob); 
+			  
+			}
 
-This is a generator for the trick from the guys over at <a href="http://lcamtuf.coredump.cx/squirrel/#">coredump.cx</a><br>Be sure to pay them a visit.<br><br>
-Visit me on <a href="https://github.com/ozzi-/">GitHub</a>.<br>
-Everything happens in JS using the HTML5 Filereader and some (purely client-sided magic).
-<br>
-<br>
-<hr>
-<br>
-Text (html works too) that will be 'injected':<br>
-<textarea id="text" rows="4" cols="50">
-</textarea> 
-<br><br>
-Choose a JPG:<br>
-(be aware, not all work, still figuring out why some <br>of them get corrupted while some of them don't).<br>
-<input type="file" id="fileimg" name="img" accept="image/jpeg" />
-<div id="progress_bar_img">
-	<div class="percent_img">
+			reader.readAsBinaryString(document.querySelector('input[type=file]').files[0]);
+		  }
 
-	</div>
-</div>
-<br><br>
-<a href="#" id="link" style="visibility: hidden;" target="_blank">Open (if popup was blocked)</a><br>
-
-<script>
-  var reader;
-  var progress_img 	= document.querySelector('.percent_img');
-
-  function abortRead() {
-    reader.abort();
-  }
-
-  function errorHandler(evt) {
-    switch(evt.target.error.code) {
-      case evt.target.error.NOT_FOUND_ERR:
-        alert('File Not Found!');
-        break;
-      case evt.target.error.NOT_READABLE_ERR:
-        alert('File is not readable');
-        break;
-      case evt.target.error.ABORT_ERR:
-        break; // noop
-      default:
-        alert('An error occurred reading this file :(');
-    };
-  }
-
-  function updateProgress(evt,field) {
-  	var progress = document.querySelector('.percent_'+field);
-    if (evt.lengthComputable) {
-      var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-      if (percentLoaded < 100) {
-        progress.style.width = percentLoaded + '%';
-        progress.textContent = percentLoaded + '%';
-      }
-    }
-  }
-  
-
-  function handleFileSelect(evt,field) {
-	var progress = document.querySelector('.percent_'+field);
-    progress.style.width = '0%';
-    progress.textContent = '0%';
-
-    reader = new FileReader();
-    reader.onerror = errorHandler;
-    reader.onprogress = function(evt){ updateProgress(evt,'img'); };
-
-    reader.onloadstart = function(e) {
-      document.getElementById('progress_bar_'+field).className = 'loading';
-    };
-    reader.onload = function(e) {
-      progress.style.width = '100%';
-      progress.textContent = '100%';
-      setTimeout("document.getElementById('progress_bar_"+field+"').className='';", 2000);
-	  var result = reader.result;
-	  var inject = '<html><body onload="document.getElementById(\'myImg\').src = window.location.href;"><style>body { visibility: hidden; } .n { visibility: visible; position: absolute; padding: 0 1ex 0 1ex; margin: 0; top: 0; left: 0; } h1 { margin-top: 0.4ex; margin-bottom: 0.8ex; }</style><div class=n>'+document.getElementById("text").value+'<br><img id="myImg" src="blob:null/8724db71-d073-4a43-8db7-7463ac3625ea" style="border: 1px solid crimson; heigth:50%;"><br><br>Idea by: lcamtuf@coredump.cx<br>Generator by: http://github.com/ozzi-/<!--';
-	  
-	  var i, l, d, array;
-	  d = reader.result;
-	  l = d.length;
-	  array = new Uint8Array(l+inject.length);
-	  for (var i = 0; i < 24; i++){
-	    array[i] = d.charCodeAt(i);
-	  }
-	  for (var i = 0; i < inject.length; i++){
-	    array[i+24] = inject.charCodeAt(i);
-	  }
-	  for (var i = 24; i < l; i++){
-	    array[i+inject.length] = d.charCodeAt(i);
-	  }
-
-	  var oMyBlob = new Blob([array], {type : 'text/html'}); // image/jpeg
-	  window.open(URL.createObjectURL(oMyBlob));
-	  document.getElementById("link").href=URL.createObjectURL(oMyBlob); 
-	  document.getElementById("link").style.visibility = 'visible';
-    }
-
-    reader.readAsBinaryString(evt.target.files[0]);
-  }
-
-  document.getElementById('fileimg').addEventListener(	'change', 
-														function(evt){
-															handleFileSelect(evt,'img');
-														}, false);
- 
-</script>
+		  document.getElementById('btn-go').onclick = function(evt) {generate(evt)};
+		  document.getElementById('img-file').addEventListener('change', 
+			function(){ if(document.querySelector('input[type=file]').files[0]!==undefined){
+							document.getElementById("btn-go").style.visibility = 'visible';
+						}
+			}, false);
+		</script>
+	</body>
+</html>

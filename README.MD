@@ -8,9 +8,9 @@ Credit for the original idea goes to: http://lcamtuf.coredump.cx/squirrel/#
 
 # Upload
 
-![upload](http://i.imgur.com/3R3cd6H.png)
+![upload](https://i.imgur.com/DJFoTdp.png)
 
 -----
 
 # Result
-![result](http://i.imgur.com/KfTuGAY.jpg)
+![result](https://i.imgur.com/0AKwkux.png)
