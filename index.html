@@ -31,6 +31,18 @@ Text (html works too) that will be 'injected':<br>
 <textarea id="text" rows="4" cols="50">
 </textarea> 
 <br><br>
+<form>
+  <p>Choose Content Type:</p>
+  <fieldset>
+    <input type="radio" id="thtml" name="type" value="text/html" checked>
+    <label for="thtml"> text/html</label><br> 
+    <input type="radio" id="tjpeg" name="type" value="image/jpeg">
+    <label for="tjpeg"> image/jpeg</label><br> 
+	<input type="radio" id="ttext" name="type" value="text/plain">
+    <label for="tjpeg"> text/plain</label><br> 
+  </fieldset>
+</form>
+<br><br>
 Choose a JPG:<br>
 (be aware, not all work, still figuring out why some <br>of them get corrupted while some of them don't).<br>
 <input type="file" id="fileimg" name="img" accept="image/jpeg" />
@@ -40,7 +52,7 @@ Choose a JPG:<br>
 	</div>
 </div>
 <br><br>
-<a href="#" id="link" style="visibility: hidden;" target="_blank">Open (if popup was blocked)</a><br>
+<a href="#" id="link" style="visibility: hidden;" target="_blank">Click here to open the generated blob (if popup was blocked)</a><br><i>You can directly save via right-click 'save as'</i><br>
 
 <script>
   var reader;
@@ -110,7 +122,7 @@ Choose a JPG:<br>
 	    array[i+inject.length] = d.charCodeAt(i);
 	  }
 
-	  var oMyBlob = new Blob([array], {type : 'text/html'}); // image/jpeg
+	  var oMyBlob = new Blob([array], {type : document.querySelector('input[name = "type"]:checked').value}); 
 	  window.open(URL.createObjectURL(oMyBlob));
 	  document.getElementById("link").href=URL.createObjectURL(oMyBlob); 
 	  document.getElementById("link").style.visibility = 'visible';
@@ -120,8 +132,8 @@ Choose a JPG:<br>
   }
 
   document.getElementById('fileimg').addEventListener(	'change', 
-														function(evt){
-															handleFileSelect(evt,'img');
-														}, false);
+							function(evt){
+								handleFileSelect(evt,'img');
+							}, false);
  
 </script>
